@@ -1,0 +1,228 @@
+:root {
+  --olivus-bg: #CEC4B0;
+  --olivus-navbar: #334214;
+  --olivus-text-dark: #1f1f1f;
+  --olivus-text-light: #ffffff;
+}
+
+body {
+  background-color: var(--olivus-bg);
+  color: var(--olivus-text-dark);
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.ol-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* OFFCANVAS – ISTA BOJA KAO NAVBAR */
+.offcanvas {
+  background-color: #334214;
+  color: white;
+}
+
+/* LINKOVI U OFFCANVASU */
+.offcanvas .nav-link {
+  color: white;
+}
+
+.offcanvas .nav-link:hover {
+  color: #e6e6e6;
+}
+
+/* GUMB ZA ZATVARANJE (X) DA BUDE BIJEL */
+.offcanvas .btn-close {
+  filter: invert(1);
+}
+/* LANDING PAGE */
+.landing-wrapper {
+  min-height: calc(100vh - 80px); /* minus navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.landing-card {
+  background: white;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.landing-logo {
+  width: 140px;
+  margin-bottom: 16px;
+}
+
+.landing-slogan {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+.landing-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+/* AUTH (LOGIN/REGISTER) */
+.auth-wrapper {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px 22px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+}
+
+.auth-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.auth-subtitle {
+  margin: 0 0 18px;
+  color: rgba(0,0,0,0.65);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.auth-input {
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.18);
+  padding: 12px 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-input:focus {
+  border-color: #334214;
+  box-shadow: 0 0 0 4px rgba(51, 66, 20, 0.15);
+}
+
+.auth-footer {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+/* PAGE */
+.page {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 14px;
+}
+
+.page-title {
+  margin: 0;
+  font-weight: 800;
+}
+
+.page-subtitle {
+  margin: 4px 0 0;
+  color: rgba(0,0,0,0.65);
+}
+
+/* ACTION CARDS */
+.grid-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.action-card {
+  display: block;
+  text-decoration: none;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+}
+
+.action-title {
+  color: #334214;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.action-desc {
+  color: rgba(0,0,0,0.65);
+  margin-top: 4px;
+}
+
+/* “ZADNJA REZERVACIJA” */
+.res-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.res-row:last-child {
+  border-bottom: none;
+}
+
+.res-label {
+  color: rgba(0,0,0,0.6);
+  font-weight: 600;
+}
+
+.res-value {
+  font-weight: 700;
+}
+
+/* STATUS BADGE */
+.badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.status-pending {
+  background: rgba(255, 165, 0, 0.18);
+  color: #8a5a00;
+}
