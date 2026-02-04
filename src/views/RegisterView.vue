@@ -61,7 +61,8 @@
 
 <script>
 
-import { firebase } from '@/firebase';
+import { auth } from '@/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
   export default {
@@ -77,13 +78,17 @@ import { firebase } from '@/firebase';
     },
     methods: {
       register() {
-        firebase.auth().createUserWithEmailAndPassword(this.email, this.lozinka).then(
-          function(){
-            console.log("Uspješna registracija"); 
-          
+        createUserWithEmailAndPassword(auth, this.email, this.lozinka).then(
+          () => {
+            console.log("Uspješna registracija");
+            alert ("Uspješna registracija!");
+
+            this.$router.push('/dashboard');
+
           }
-        ).catch( function () {
-          console.error ("Došlo je do greške", error); 
+        ).catch( (error) => {
+          console.error("Došlo je do greške:", error);
+          alert("Greška: " + error.message);
         }); 
       }
     }
