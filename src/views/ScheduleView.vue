@@ -16,17 +16,18 @@
       </div>
     </div>
 
-    <!-- Količina u tonama -->
+    <!-- Količina u kilogramima -->
     <div class="mb-3">
-      <label class="form-label">Količina</label>
+      <label class="form-label">Količina (kg)</label>
       <input
         type="number"
         class="form-control"
         v-model="kolicina"
-        placeholder="Upiši količinu (u tonama)"
+        placeholder="Upiši količinu u kilogramima"
         min="0"
-        step="0.1"
+        step="1"
       />
+      <small class="text-muted">Možete napisati približnu količinu ako ne znate točno</small>
     </div>
 
     <!-- Odabir datuma -->
@@ -39,38 +40,87 @@
       />
     </div>
 
+    <!-- Error poruka -->
+    <div v-if="errorMessage" class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
+
     <!-- Gumb Dalje -->
     <div class="d-grid">
-      <button class="btn btn-primary btn-lg" @click="dalje">Dalje</button>
+      <button
+        class="btn btn-primary btn-lg"
+        @click="dalje"
+        :disabled="loading"
+      >
+        <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ loading ? 'Spremam...' : 'Rezerviraj' }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { db, auth } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
 export default {
   name: "ScheduleView",
   data() {
     return {
       uljara: "",
       kolicina: "",
-      datum: ""
+      datum: "",
+      loading: false,
+      errorMessage: ""
     };
   },
   methods: {
-    dalje() {
+    async dalje() {
+      // Validacija polja
       if (!this.uljara || !this.kolicina || !this.datum) {
-        alert("Molimo popunite sva polja!");
+        this.errorMessage = "Molimo popunite sva polja!";
         return;
       }
 
-      this.$router.push({
-        name: "scheduleConfirm",
-        query: {
+      // Provjera da li je korisnik ulogovan
+      if (!auth.currentUser) {
+        this.errorMessage = "Morate biti ulogovani da rezervišete termin!";
+        this.$router.push('/login');
+        return;
+      }
+
+      this.loading = true;
+      this.errorMessage = "";
+
+      try {
+        // Spremi rezervaciju u Firestore
+        const docRef = await addDoc(collection(db, 'reservations'), {
+          userId: auth.currentUser.uid,
+          userEmail: auth.currentUser.email,
           uljara: this.uljara,
-          kolicina: this.kolicina,
-          datum: this.datum
-        }
-      });
+          kolicina: parseFloat(this.kolicina),
+          datum: this.datum,
+          status: 'pending', // pending, confirmed, cancelled
+          createdAt: serverTimestamp()
+        });
+
+        console.log("Rezervacija uspješno kreirana:", docRef.id);
+
+        // Resetuj formu
+        this.uljara = "";
+        this.kolicina = "";
+        this.datum = "";
+
+        // Preusmjeri na "Moje rezervacije"
+        alert("Rezervacija uspješno kreirana!");
+        this.$router.push('/my-reservations');
+
+      } catch (error) {
+        console.error("Greška prilikom kreiranja rezervacije:", error);
+        this.errorMessage = "Došlo je do greške. Pokušajte ponovo.";
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };

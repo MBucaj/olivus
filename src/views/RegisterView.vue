@@ -61,8 +61,9 @@
 
 <script>
 
-import { auth } from '@/firebase';
+import { auth, db } from '@/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 
   export default {
@@ -77,24 +78,35 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
       };
     },
     methods: {
-      register() {
+      async register() {
         if (this.lozinka !== this.potvrdiLozinku) {
           alert("Lozinke se ne podudaraju!");
           return;
         }
 
-        createUserWithEmailAndPassword(auth, this.email, this.lozinka).then(
-          () => {
-            console.log("Uspješna registracija");
-            alert ("Uspješna registracija!");
+        try {
+          // 1. Kreiraj account u Firebase Auth
+          const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.lozinka);
+          const user = userCredential.user;
 
-            this.$router.push('/dashboard');
+          // 2. Kreiraj dokument u users kolekciji
+          await setDoc(doc(db, 'users', user.uid), {
+            email: this.email,
+            displayName: this.imePrezime,
+            role: 'user',  // Obični korisnik (maslinari)
+            uljaraId: null,
+            createdAt: serverTimestamp()
+          });
 
-          }
-        ).catch( (error) => {
+          console.log("Uspješna registracija - user i users dokument kreirani");
+          alert("Uspješna registracija!");
+
+          this.$router.push('/dashboard');
+
+        } catch (error) {
           console.error("Došlo je do greške:", error);
           alert("Greška: " + error.message);
-        });
+        }
       }
     }
   };

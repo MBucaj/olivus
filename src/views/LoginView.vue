@@ -39,8 +39,9 @@
 </template>
 
 <script>
-import { auth } from '@/firebase';
+import { auth, db } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default {
   name: 'LoginView',
@@ -51,14 +52,34 @@ export default {
     };
   },
   methods: {
-    login() {
-      signInWithEmailAndPassword(auth, this.email, this.lozinka)
-        .then(() => {
+    async login() {
+      try {
+        // 1. Logiranje u Firebase Auth
+        const userCredential = await signInWithEmailAndPassword(auth, this.email, this.lozinka);
+        const user = userCredential.user;
+
+        // 2. Dohvati user dokument iz Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+
+          // 3. Redirect ovisno o ulozi
+          if (userData.role === 'admin') {
+            this.$router.replace('/admin');
+          } else {
+            this.$router.replace('/dashboard');
+          }
+        } else {
+          // Ako user dokument ne postoji, redirect na dashboard
+          console.warn("User dokument ne postoji, redirect na dashboard");
           this.$router.replace('/dashboard');
-        })
-        .catch((error) => {
-          alert('Greška: ' + error.message);
-        });
+        }
+
+      } catch (error) {
+        alert('Greška: ' + error.message);
+      }
     },
   },
 };
