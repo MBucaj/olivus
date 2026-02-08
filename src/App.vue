@@ -7,10 +7,18 @@
 
 <script>
 import NavBar from "./components/NavBar.vue";
+import { auth } from '@/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import store from '@/stores/store';
 
 export default {
   components: {
     NavBar
+  },
+  mounted() {
+    onAuthStateChanged(auth, (currentUser) => {
+      store.currentUser = currentUser ? currentUser.email : null;
+    });
   }
 }
 </script>

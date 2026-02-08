@@ -3,92 +3,68 @@
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/">Olivus</router-link>
 
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasNavbar"
-        aria-controls="offcanvasNavbar"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <ul v-if="currentUser" class="navbar-nav flex-row gap-3 align-items-center">
+        <li class="nav-item">
+          <router-link class="nav-link" to="/dashboard">Početna</router-link>
+        </li>
 
-      <div
-        class="offcanvas offcanvas-end"
-        tabindex="-1"
-        id="offcanvasNavbar"
-      >
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title">Izbornik</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-          ></button>
-        </div>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/schedule">Rezerviraj termin</router-link>
+        </li>
 
-        <div class="offcanvas-body">
-          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/">Početna</router-link>
-            </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/my-reservations">Moje rezervacije</router-link>
+        </li>
 
-            <li class="nav-item">
-              <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
-            </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/admin">Admin</router-link>
+        </li>
 
-            <li class="nav-item">
-              <router-link class="nav-link" to="/schedule">Rezerviraj termin</router-link>
-            </li>
-
-            <li class="nav-item">
-              <router-link class="nav-link" to="/my-reservations">Moje rezervacije</router-link>
-            </li>
-
-            <li class="nav-item">
-              <router-link class="nav-link" to="/admin">Admin</router-link>
-            </li>
-          </ul>
-
-          <button class="btn btn-outline-danger mt-3 w-100">
-            Odjava
-          </button>
-        </div>
-      </div>
+        <li class="nav-item">
+          <button class="btn btn-outline-light btn-sm" @click="logout">Odjava</button>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
 
 <script>
+import { auth } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import store from '@/stores/store';
+
 export default {
-  name: "NavBar"
-}
+  name: "NavBar",
+  computed: {
+    currentUser() {
+      return store.currentUser;
+    }
+  },
+  methods: {
+    logout() {
+      signOut(auth)
+        .then(() => {
+          this.$router.push('/');
+        })
+        .catch((error) => {
+          alert('Greška: ' + error.message);
+        });
+    }
+  }
+};
 </script>
 
 <style scoped>
-/* NAVBAR BOJA */
 .olivus-navbar {
   background-color: #334214;
 }
 
-/* LINKOVI I LOGO */
 .olivus-navbar .navbar-brand,
 .olivus-navbar .nav-link {
   color: white;
 }
 
-/* HOVER */
 .olivus-navbar .nav-link:hover {
   color: #e6e6e6;
-}
-
-/* HAMBURGER IKONA DA BUDE BIJELA */
-.olivus-navbar .navbar-toggler-icon {
-  filter: invert(1);
-}
-
-/* BORDER HAMBURGER GUMBA */
-.olivus-navbar .navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.4);
 }
 </style>

@@ -4,7 +4,7 @@
       <h2 class="auth-title">Registracija</h2>
       <p class="auth-subtitle">Kreiraj račun i rezerviraj termin u uljari.</p>
 
-      <form class="auth-form">
+      <form class="auth-form" @submit.prevent="register">
         <div class="auth-field">
           <label class="auth-label">Ime i prezime</label>
           <input
@@ -45,7 +45,7 @@
           />
         </div>
 
-        <button type="button" @click="register" class="auth-btn ol-btn ol-btn-primary w-100">
+        <button type="submit" class="auth-btn ol-btn ol-btn-primary w-100">
           Registriraj se
         </button>
 
@@ -69,15 +69,20 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
     name:'register',
     data() {
       return {
-        imePrezime: "", 
-        email: "", 
-        lozinka: "", 
-        potvrdiLozinku: "", 
+        imePrezime: "",
+        email: "",
+        lozinka: "",
+        potvrdiLozinku: "",
 
       };
     },
     methods: {
       register() {
+        if (this.lozinka !== this.potvrdiLozinku) {
+          alert("Lozinke se ne podudaraju!");
+          return;
+        }
+
         createUserWithEmailAndPassword(auth, this.email, this.lozinka).then(
           () => {
             console.log("Uspješna registracija");
@@ -89,9 +94,9 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
         ).catch( (error) => {
           console.error("Došlo je do greške:", error);
           alert("Greška: " + error.message);
-        }); 
+        });
       }
     }
-  }; 
+  };
 
 </script>

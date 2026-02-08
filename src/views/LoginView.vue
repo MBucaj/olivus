@@ -4,10 +4,11 @@
       <h2 class="auth-title">Prijava</h2>
       <p class="auth-subtitle">Prijavi se da rezerviraš termin u uljari.</p>
 
-      <form class="auth-form">
+      <form class="auth-form" @submit.prevent="login">
         <div class="auth-field">
           <label class="auth-label">Email</label>
           <input
+            v-model="email"
             class="auth-input"
             type="email"
             placeholder="npr. ana@mail.com"
@@ -17,6 +18,7 @@
         <div class="auth-field">
           <label class="auth-label">Lozinka</label>
           <input
+            v-model="lozinka"
             class="auth-input"
             type="password"
             placeholder="••••••••"
@@ -35,3 +37,29 @@
     </div>
   </div>
 </template>
+
+<script>
+import { auth } from '@/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+export default {
+  name: 'LoginView',
+  data() {
+    return {
+      email: '',
+      lozinka: '',
+    };
+  },
+  methods: {
+    login() {
+      signInWithEmailAndPassword(auth, this.email, this.lozinka)
+        .then(() => {
+          this.$router.replace('/dashboard');
+        })
+        .catch((error) => {
+          alert('Greška: ' + error.message);
+        });
+    },
+  },
+};
+</script>

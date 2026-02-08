@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h2 class="page-title">Dashboard</h2>
+      <h2 class="page-title">Početna</h2>
       <p class="page-subtitle">Dobrodošla u Olivus.</p>
     </div>
 
