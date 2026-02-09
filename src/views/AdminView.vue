@@ -1,8 +1,7 @@
 <template>
   <div class="admin-page">
     <div class="admin-header mb-4">
-      <h2>Admin Panel</h2>
-      <h5 v-if="uljaraName" class="text-muted">{{ uljaraName }}</h5>
+      <h2 v-if="uljaraName">{{ uljaraName }}</h2>
     </div>
 
     <!-- Loading -->

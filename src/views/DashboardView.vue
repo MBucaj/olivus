@@ -1,8 +1,8 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h2 class="page-title">Početna</h2>
-      <p class="page-subtitle">Dobrodošla u Olivus.</p>
+      <h2 class="page-title">Pozdrav, {{ displayName || 'korisniče' }}!</h2>
+      <p class="page-subtitle">Dobrodošao/la u Olivus.</p>
     </div>
 
     <!-- Glavne akcije -->
@@ -18,33 +18,28 @@
       </router-link>
     </div>
 
-    <!-- Brzi pregled (dummy podaci za dizajn) -->
-    <div class="ol-card mt-3">
-      <h5 class="mb-2">Zadnja rezervacija</h5>
-
-      <div class="res-row">
-        <span class="res-label">Datum</span>
-        <span class="res-value">12.01.2026</span>
-      </div>
-
-      <div class="res-row">
-        <span class="res-label">Vrijeme</span>
-        <span class="res-value">10:30</span>
-      </div>
-
-      <div class="res-row">
-        <span class="res-label">Količina</span>
-        <span class="res-value">150 kg</span>
-      </div>
-
-      <div class="res-row">
-        <span class="res-label">Status</span>
-        <span class="badge status-pending">PENDING</span>
-      </div>
-
-      <router-link to="/my-reservations" class="btn ol-btn ol-btn-outline w-100 mt-3">
-        Pogledaj sve rezervacije
-      </router-link>
-    </div>
   </div>
 </template>
+
+<script>
+import { auth, db } from '@/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
+export default {
+  name: "DashboardView",
+  data() {
+    return {
+      displayName: ''
+    };
+  },
+  async mounted() {
+    const user = auth.currentUser;
+    if (user) {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        this.displayName = userDoc.data().displayName;
+      }
+    }
+  }
+};
+</script>
