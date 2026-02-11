@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-page">
+  <div class="admin-page"> 
     <div class="admin-header mb-4">
       <h2 v-if="uljaraName">{{ uljaraName }}</h2>
     </div>

@@ -37,6 +37,7 @@
         type="date"
         class="form-control"
         v-model="datum"
+        :min="todayDate"
       />
     </div>
 
@@ -73,6 +74,11 @@ export default {
       loading: false,
       errorMessage: ""
     };
+  },
+  computed: {
+    todayDate() {
+      return new Date().toISOString().split('T')[0];
+    }
   },
   methods: {
     async dalje() {
