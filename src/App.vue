@@ -17,7 +17,7 @@ export default {
   },
   mounted() {
     onAuthStateChanged(auth, (currentUser) => {
-      store.currentUser = currentUser; // Spremi cijeli user objekt, ne samo email
+      store.currentUser = currentUser;
     });
   }
 }

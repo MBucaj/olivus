@@ -2,19 +2,19 @@
   <div class="landing-wrapper">
     <div class="landing-card">
 
-      <!-- LOGO -->
+      
       <img
         src="@/assets/logo.png"
         alt="Olivus logo"
         class="landing-logo"
       />
 
-      <!-- SLOGAN -->
+      
       <p class="landing-slogan">
         Jednostavna rezervacija termina u uljarama tijekom berbe maslina
       </p>
 
-      <!-- GUMBI -->
+      
       <div class="landing-actions">
         <router-link to="/login" class="btn ol-btn ol-btn-primary w-100 mb-2">
           Prijava

@@ -4,7 +4,6 @@
       <router-link class="navbar-brand" to="/">Olivus</router-link>
 
       <ul v-if="currentUser" class="navbar-nav flex-row gap-3 align-items-center">
-        <!-- Linkovi samo za obične korisnike (ne admini) -->
         <li class="nav-item" v-if="!isAdmin">
           <router-link class="nav-link" to="/dashboard">Početna</router-link>
         </li>
@@ -17,7 +16,6 @@
           <router-link class="nav-link" to="/my-reservations">Moje rezervacije</router-link>
         </li>
 
-        <!-- Odjava za sve (admini i korisnici) -->
         <li class="nav-item">
           <button class="btn btn-outline-light btn-sm" @click="logout">Odjava</button>
         </li>
@@ -52,7 +50,6 @@ export default {
       immediate: true,
       async handler(user) {
         if (user) {
-          // Učitaj user podatke iz Firestore
           try {
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {

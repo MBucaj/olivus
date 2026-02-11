@@ -1,17 +1,15 @@
 <template>
-  <div class="admin-page"> 
+  <div class="admin-page">
     <div class="admin-header mb-4">
       <h2 v-if="uljaraName">{{ uljaraName }}</h2>
     </div>
 
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Učitavanje...</span>
       </div>
     </div>
 
-    <!-- Filter -->
     <div v-else class="filter-section mb-4">
       <div class="row">
         <div class="col-md-4">
@@ -25,7 +23,6 @@
       </div>
     </div>
 
-    <!-- Lista rezervacija -->
     <div class="reservations-admin-list">
       <div
         v-for="rez in filteredReservations"
@@ -42,49 +39,48 @@
 
         <div class="reservation-details">
           <div class="detail-row">
-            <span class="detail-label"> Datum:</span>
+            <span class="detail-label">Datum:</span>
             <span class="detail-value">{{ formatDatum(rez.datum) }}</span>
           </div>
 
           <div class="detail-row" v-if="rez.timeSlot">
-            <span class="detail-label"> Vrijeme:</span>
+            <span class="detail-label">Vrijeme:</span>
             <span class="detail-value">{{ rez.timeSlot }}</span>
           </div>
 
           <div class="detail-row">
-            <span class="detail-label"> Količina:</span>
+            <span class="detail-label">Količina:</span>
             <span class="detail-value">{{ rez.kolicina }} kg</span>
           </div>
 
           <div class="detail-row">
-            <span class="detail-label"> Trajanje:</span>
+            <span class="detail-label">Trajanje:</span>
             <span class="detail-value">{{ calculateDuration(rez.kolicina) }} min</span>
           </div>
 
           <div class="detail-row">
-            <span class="detail-label"> Kreirano:</span>
+            <span class="detail-label">Kreirano:</span>
             <span class="detail-value">{{ formatTimestamp(rez.createdAt) }}</span>
           </div>
         </div>
 
-        <!-- Akcije -->
         <div class="action-buttons mt-3" v-if="rez.status === 'pending'">
           <button
             class="btn btn-success btn-sm me-2"
             @click="openConfirmModal(rez)"
           >
-            ✅ Potvrdi
+            Potvrdi
           </button>
           <button
             class="btn btn-danger btn-sm"
             @click="odbijRezervaciju(rez.id)"
           >
-            ❌ Odbij
+            Odbij
           </button>
         </div>
 
         <div v-if="rez.status === 'confirmed'" class="mt-2">
-          <small class="text-success">✅ Potvrđeno: {{ formatTimestamp(rez.confirmedAt) }}</small>
+          <small class="text-success">Potvrđeno: {{ formatTimestamp(rez.confirmedAt) }}</small>
         </div>
       </div>
 
@@ -93,7 +89,6 @@
       </div>
     </div>
 
-    <!-- Confirm Modal -->
     <div
       class="modal fade"
       id="confirmModal"
@@ -205,7 +200,6 @@ export default {
           return;
         }
 
-        // Dohvati user dokument
         const userDoc = await getDoc(doc(db, 'users', user.uid));
 
         if (!userDoc.exists()) {
@@ -216,14 +210,12 @@ export default {
 
         const userData = userDoc.data();
 
-        // Provjeri da li je admin
         if (userData.role !== 'admin') {
           alert("Nemate admin pristup!");
           this.$router.push('/dashboard');
           return;
         }
 
-        // Postavi uljaru
         this.adminUljaraId = userData.uljaraId;
         this.uljaraName = this.getUljaraName(userData.uljaraId);
 
@@ -252,7 +244,6 @@ export default {
         console.error("Greška pri dohvaćanju rezervacija:", error);
 
         if (error.code === 'failed-precondition') {
-          console.warn("Index nije kreiran. Pokušavam bez orderBy...");
           await this.dohvatiRezervacijeBezSortiranja();
         }
       } finally {
@@ -313,7 +304,6 @@ export default {
           adminNotes: this.adminNotes || null
         });
 
-        // Ažuriraj lokalno
         const rez = this.rezervacije.find(r => r.id === this.selectedReservation.id);
         if (rez) {
           rez.status = 'confirmed';
@@ -324,7 +314,6 @@ export default {
 
         alert("Rezervacija potvrđena!");
 
-        // Zatvori modal
         const modalEl = this.$refs.confirmModal;
         const modal = Modal.getInstance(modalEl);
         modal.hide();

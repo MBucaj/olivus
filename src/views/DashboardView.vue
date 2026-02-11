@@ -5,7 +5,6 @@
       <p class="page-subtitle">Dobrodošao/la u Olivus.</p>
     </div>
 
-    <!-- Glavne akcije -->
     <div class="grid-actions">
       <router-link to="/schedule" class="action-card">
         <div class="action-title">Rezerviraj termin</div>
@@ -17,7 +16,6 @@
         <div class="action-desc">Pregled i otkazivanje termina</div>
       </router-link>
     </div>
-
   </div>
 </template>
 

@@ -2,20 +2,17 @@
   <div class="reservations-page">
     <h2 class="mb-4">Moje rezervacije</h2>
 
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Učitavanje...</span>
       </div>
     </div>
 
-    <!-- Nema rezervacija -->
     <div v-else-if="rezervacije.length === 0" class="text-center py-5">
       <p class="text-muted">Nemate nijednu rezervaciju.</p>
       <router-link to="/schedule" class="btn btn-primary">Rezerviraj termin</router-link>
     </div>
 
-    <!-- Lista rezervacija -->
     <div v-else class="reservations-list">
       <div class="reservation-card" v-for="rez in rezervacije" :key="rez.id">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -43,7 +40,6 @@
           <span class="reservation-value-small">{{ formatTimestamp(rez.createdAt) }}</span>
         </div>
 
-        <!-- Akcije -->
         <div class="mt-3" v-if="rez.status === 'pending'">
           <button
             class="btn btn-sm btn-danger w-100"
@@ -83,11 +79,10 @@ export default {
           return;
         }
 
-        // Ispravljen naziv kolekcije na "reservations"
         const q = query(
           collection(db, "reservations"),
           where("userId", "==", user.uid),
-          orderBy("createdAt", "desc") // Koristimo createdAt umjesto datum
+          orderBy("createdAt", "desc")
         );
 
         const snapshot = await getDocs(q);
@@ -98,9 +93,7 @@ export default {
       } catch (error) {
         console.error("Greška pri dohvaćanju rezervacija:", error);
 
-        // Ako je greška zbog indexa, pokušaj bez orderBy
         if (error.code === 'failed-precondition') {
-          console.warn("Index nije kreiran. Pokušavam bez orderBy...");
           await this.dohvatiRezervacijeBezSortiranja();
         }
       } finally {
@@ -124,7 +117,6 @@ export default {
           ...doc.data()
         }));
 
-        // Sortiraj lokalno
         this.rezervacije.sort((a, b) => {
           if (!a.createdAt || !b.createdAt) return 0;
           return b.createdAt.toMillis() - a.createdAt.toMillis();
@@ -144,7 +136,6 @@ export default {
           status: 'cancelled'
         });
 
-        // Ažuriraj lokalno
         const rez = this.rezervacije.find(r => r.id === rezervacijaId);
         if (rez) rez.status = 'cancelled';
 
