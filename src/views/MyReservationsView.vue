@@ -2,6 +2,32 @@
   <div class="reservations-page">
     <h2 class="mb-4">Moje rezervacije</h2>
 
+    <div v-if="!loading && rezervacije.length > 0" class="sort-bar mb-4">
+      <div class="sort-group">
+        <label class="sort-label">Sortiraj po:</label>
+        <div class="sort-buttons">
+          <button
+            class="sort-btn"
+            :class="{ active: sortBy === 'datum' }"
+            @click="setSortBy('datum')"
+          >Datumu</button>
+          <button
+            class="sort-btn"
+            :class="{ active: sortBy === 'status' }"
+            @click="setSortBy('status')"
+          >Statusu</button>
+          <button
+            class="sort-btn"
+            :class="{ active: sortBy === 'kolicina' }"
+            @click="setSortBy('kolicina')"
+          >Količini</button>
+        </div>
+      </div>
+      <button class="sort-dir-btn" @click="toggleDir">
+        {{ sortDir === 'asc' ? '↑ Uzlazno' : '↓ Silazno' }}
+      </button>
+    </div>
+
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-secondary" role="status">
         <span class="visually-hidden">Učitavanje...</span>
@@ -14,7 +40,7 @@
     </div>
 
     <div v-else class="reservations-list">
-      <div class="reservation-card" v-for="rez in rezervacije" :key="rez.id">
+      <div class="reservation-card" v-for="rez in sortiraneRezervacije" :key="rez.id">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h5 class="mb-0">{{ getUljaraName(rez.uljara) }}</h5>
           <span :class="getStatusClass(rez.status)">{{ getStatusText(rez.status) }}</span>
@@ -63,13 +89,51 @@ export default {
   data() {
     return {
       rezervacije: [],
-      loading: true
+      loading: true,
+      sortBy: 'datum',
+      sortDir: 'desc'
     };
+  },
+  computed: {
+    sortiraneRezervacije() {
+      return [...this.rezervacije].sort((a, b) => {
+        let valA, valB;
+
+        if (this.sortBy === 'datum') {
+          valA = a.datum || '';
+          valB = b.datum || '';
+        } else if (this.sortBy === 'status') {
+          const redoslijed = { pending: 1, confirmed: 2, cancelled: 3 };
+          valA = redoslijed[a.status] || 9;
+          valB = redoslijed[b.status] || 9;
+        } else if (this.sortBy === 'kolicina') {
+          valA = a.kolicina || 0;
+          valB = b.kolicina || 0;
+        }
+
+        if (valA < valB) return this.sortDir === 'asc' ? -1 : 1;
+        if (valA > valB) return this.sortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
   },
   mounted() {
     this.dohvatiRezervacije();
   },
   methods: {
+    setSortBy(kriterij) {
+      if (this.sortBy === kriterij) {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortBy = kriterij;
+        this.sortDir = 'asc';
+      }
+    },
+
+    toggleDir() {
+      this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    },
+
     async dohvatiRezervacije() {
       this.loading = true;
       try {
@@ -261,5 +325,56 @@ export default {
 .btn-danger:hover {
   background-color: #bb2d3b;
   border-color: #bb2d3b;
+}
+
+.sort-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-label {
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.sort-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.sort-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-btn.active {
+  background-color: #334214;
+  color: white;
+  border-color: #334214;
+}
+
+.sort-dir-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid #334214;
+  background: white;
+  color: #334214;
+  font-size: 13px;
+  cursor: pointer;
 }
 </style>
